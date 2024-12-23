@@ -53,7 +53,7 @@ class MyApp extends StatelessWidget {
             TreeNode(
               label: const Text('Root'),
               value: 'root',
-              icon: Icons.folder,
+              icon: Icon(Icons.folder),
               children: [
                 TreeNode(label: const Text('Child 1'), value: 'child1'),
                 TreeNode(label: const Text('Child 2'), value: 'child2'),

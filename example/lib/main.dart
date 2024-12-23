@@ -48,36 +48,36 @@ class _MyHomePageState extends State<MyHomePage> {
         children: [
           TreeNode(
             label: const Text('src'),
-            icon: Icons.folder_open,
+            icon: Icon(Icons.folder_open),
             children: [
               TreeNode(
                   label: const Text('main.js'),
                   value: 'main_js',
-                  icon: Icons.javascript,
+                  icon: Icon(Icons.javascript),
                   isSelected: true),
               TreeNode(
                   label: const Text('app.js'),
                   value: 'app_js',
-                  icon: Icons.javascript),
+                  icon: Icon(Icons.javascript)),
               TreeNode(
                   label: const Text('styles.css'),
                   value: 'styles_css',
-                  icon: Icons.css),
+                  icon: Icon(Icons.css)),
             ],
           ),
           TreeNode(
             label: const Text('public'),
             value: 'public_folder',
-            icon: Icons.folder_open,
+            icon: Icon(Icons.folder_open),
             children: [
               TreeNode(
                   label: const Text('index.html'),
                   value: 'index_html',
-                  icon: Icons.html),
+                  icon: Icon(Icons.html)),
               TreeNode(
                   label: const Text('favicon.ico'),
                   value: 'favicon',
-                  icon: Icons.image),
+                  icon: Icon(Icons.image)),
             ],
           ),
         ],
@@ -89,11 +89,11 @@ class _MyHomePageState extends State<MyHomePage> {
           TreeNode(
               label: const Text('package.json'),
               value: 'package_json',
-              icon: Icons.settings),
+              icon: Icon(Icons.settings)),
           TreeNode(
               label: const Text('.gitignore'),
               value: 'gitignore',
-              icon: Icons.remove_red_eye),
+              icon: Icon(Icons.remove_red_eye)),
         ],
       ),
     ];
@@ -222,7 +222,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   onPressed: () {
                     _treeViewKey.currentState?.setSelectAll(true);
                   },
-                  child: const Text('Select All'),
+                  child: const Text('全部选中'),
                 ),
                 ElevatedButton(
                   onPressed: () {

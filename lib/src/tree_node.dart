@@ -16,7 +16,7 @@ class TreeNode<T> {
   final T? value;
 
   /// The icon to display next to this node.
-  final IconData? icon;
+  final Icon? icon;
 
   /// The list of child nodes for this node.
   final List<TreeNode<T>> children;
@@ -64,7 +64,7 @@ class TreeNode<T> {
   factory TreeNode({
     required Widget label,
     T? value,
-    IconData? icon,
+    Icon? icon,
     bool isSelected = false,
     List<TreeNode<T>>? children,
   }) {
