@@ -9,6 +9,8 @@ part of 'treeview.dart';
 /// The type parameter [T] represents the type of the [value] associated
 /// with this node.
 class TreeNode<T> {
+  dynamic key;
+
   /// The label widget displayed for this node.
   final Widget label;
 
@@ -29,6 +31,7 @@ class TreeNode<T> {
   bool _isPartiallySelected = false;
 
   TreeNode._internal({
+    required this.key,
     required this.label,
     this.value,
     this.icon,
@@ -62,6 +65,7 @@ class TreeNode<T> {
   ///
   /// The [children] parameter is an optional list of child nodes.
   factory TreeNode({
+    dynamic key,
     required Widget label,
     T? value,
     Icon? icon,
@@ -69,6 +73,7 @@ class TreeNode<T> {
     List<TreeNode<T>>? children,
   }) {
     return TreeNode._internal(
+      key: key,
       label: label,
       value: value,
       icon: icon,

@@ -34,6 +34,45 @@ class TreeViewState<T> extends State<TreeView<T>> {
     _isAllExpanded = widget.initialExpandedLevels == 0;
   }
 
+  /// Update new node data
+  void updateNodes(List<TreeNode<T>> nodes) {
+    void eachNodes(List<TreeNode<T>> nodes, Function(TreeNode<T>) callback) {
+      for (var node in nodes) {
+        callback(node);
+        eachNodes(node.children, callback);
+      }
+    }
+
+    TreeNode<T>? findNodeByKey(List<TreeNode<T>> nodes, dynamic key) {
+      for (var node in nodes) {
+        if (node.key == key) {
+          return node;
+        }
+        var find = findNodeByKey(node.children, key);
+        if (find != null) {
+          return find;
+        }
+      }
+      return null;
+    }
+
+    setState(() {
+      // copy old nodes state
+      eachNodes(nodes, (node) {
+        var find = findNodeByKey(_roots, node.key);
+        if (find != null) {
+          node._hidden = find._hidden;
+          node._isSelected = find._isSelected;
+          node._isExpanded = find._isExpanded;
+        }
+      });
+      _roots = nodes;
+      _initializeNodes(_roots, null);
+      _updateAllNodesSelectionState();
+      _updateSelectAllState();
+    });
+  }
+
   /// Filters the tree nodes based on the provided filter function.
   ///
   /// The [filterFunction] should return true for nodes that should be visible.
@@ -190,7 +229,7 @@ class TreeViewState<T> extends State<TreeView<T>> {
 
   void _notifySelectionChanged() {
     List<T?> selectedValues = _getSelectedValues(_roots);
-    widget.onSelectionChanged(selectedValues);
+    widget.onSelectionChanged?.call(selectedValues);
   }
 
   List<T?> _getSelectedValues(List<TreeNode<T>> nodes) {
@@ -438,9 +477,11 @@ class TreeViewState<T> extends State<TreeView<T>> {
                           ),
                         if (widget.showSelectAll &&
                             widget.selectAllWidget != null)
-                          Padding(
-                            padding: const EdgeInsets.only(left: 4),
-                            child: widget.selectAllWidget!,
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.only(left: 4),
+                              child: widget.selectAllWidget!,
+                            ),
                           ),
                       ],
                     ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 part 'tree_node.dart';
+
 part 'treeview_state.dart';
 
 /// A customizable tree view widget for Flutter applications.
@@ -43,7 +44,7 @@ class TreeView<T> extends StatefulWidget {
   final List<TreeNode<T>> nodes;
 
   /// Callback function called when the selection state changes.
-  final Function(List<T?>) onSelectionChanged;
+  final Function(List<T?>)? onSelectionChanged;
 
   /// Optional theme data for the tree view.
   final ThemeData? theme;
@@ -59,6 +60,9 @@ class TreeView<T> extends StatefulWidget {
 
   /// Whether to show the expand/collapse all button.
   final bool showExpandCollapseButton;
+
+  /// Custom function to draw nodes
+  final Function(TreeNode<T> node, bool isSelected)? customDrawNode;
 
   /// Creates a [TreeView] widget.
   ///
@@ -78,12 +82,13 @@ class TreeView<T> extends StatefulWidget {
   const TreeView({
     super.key,
     required this.nodes,
-    required this.onSelectionChanged,
+    this.onSelectionChanged,
     this.theme,
     this.showSelectAll = false,
     this.selectAllWidget,
     this.initialExpandedLevels,
     this.showExpandCollapseButton = false,
+    this.customDrawNode,
   });
 
   @override
