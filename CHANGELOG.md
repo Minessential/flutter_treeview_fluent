@@ -9,3 +9,7 @@ Initial release.
 ## 1.2.0
 
 - Add `updateNodes` method to update the tree nodes.
+
+## 1.3.0
+
+- Support trailing widget builder.
