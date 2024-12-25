@@ -34,45 +34,6 @@ class TreeViewState<T> extends State<TreeView<T>> {
     _isAllExpanded = widget.initialExpandedLevels == 0;
   }
 
-  /// Update new node data
-  void updateNodes(List<TreeNode<T>> nodes) {
-    void eachNodes(List<TreeNode<T>> nodes, Function(TreeNode<T>) callback) {
-      for (var node in nodes) {
-        callback(node);
-        eachNodes(node.children, callback);
-      }
-    }
-
-    TreeNode<T>? findNodeByKey(List<TreeNode<T>> nodes, dynamic key) {
-      for (var node in nodes) {
-        if (node.key == key) {
-          return node;
-        }
-        var find = findNodeByKey(node.children, key);
-        if (find != null) {
-          return find;
-        }
-      }
-      return null;
-    }
-
-    setState(() {
-      // copy old nodes state
-      eachNodes(nodes, (node) {
-        var find = findNodeByKey(_roots, node.key);
-        if (find != null) {
-          node._hidden = find._hidden;
-          node._isSelected = find._isSelected;
-          node._isExpanded = find._isExpanded;
-        }
-      });
-      _roots = nodes;
-      _initializeNodes(_roots, null);
-      _updateAllNodesSelectionState();
-      _updateSelectAllState();
-    });
-  }
-
   /// Filters the tree nodes based on the provided filter function.
   ///
   /// The [filterFunction] should return true for nodes that should be visible.
@@ -121,14 +82,42 @@ class TreeViewState<T> extends State<TreeView<T>> {
     });
   }
 
+  /// Sets the selected values in the tree.
+  void setSelectedValues(List<T> selectedValues) {
+    for (var root in _roots) {
+      _setNodeAndDescendantsSelectionByValue(root, selectedValues);
+    }
+    _updateSelectAllState();
+    _notifySelectionChanged();
+  }
+
+  void _setNodeAndDescendantsSelectionByValue(TreeNode<T> node, List<T> selectedValues) {
+    if (node._hidden) return;
+    node._isSelected = selectedValues.contains(node.value);
+    node._isPartiallySelected = false;
+    for (var child in node.children) {
+      _setNodeAndDescendantsSelectionByValue(child, selectedValues);
+    }
+  }
+
   /// Returns a list of all selected nodes in the tree.
   List<TreeNode<T>> getSelectedNodes() {
     return _getSelectedNodesRecursive(_roots);
   }
 
+  /// Returns a list of all selected child nodes of the given node.
+  List<TreeNode<T>> getChildSelectedNodes(TreeNode<T> node) {
+    return _getSelectedNodesRecursive(node.children);
+  }
+
   /// Returns a list of all selected values in the tree.
   List<T?> getSelectedValues() {
     return _getSelectedValues(_roots);
+  }
+
+  /// Returns a list of all selected child nodes values of the given node.
+  List<T?> getChildSelectedValues(TreeNode<T> node) {
+    return _getSelectedValues(node.children);
   }
 
   void _initializeNodes(List<TreeNode<T>> nodes, TreeNode<T>? parent) {
@@ -287,9 +276,21 @@ class TreeViewState<T> extends State<TreeView<T>> {
                       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     ),
                   ),
+                  const SizedBox(width: 4),
                   if (node.icon != null) node.icon!,
                   const SizedBox(width: 4),
-                  Expanded(child: node.label),
+                  Expanded(
+                      child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      node.label,
+                      if (node.trailing != null)
+                        Padding(
+                            padding:
+                                const EdgeInsetsDirectional.only(end: 12),
+                            child: node.trailing!(context, node)),
+                    ],
+                  )),
                 ],
               ),
             ),
@@ -475,13 +476,26 @@ class TreeViewState<T> extends State<TreeView<T>> {
                                   MaterialTapTargetSize.shrinkWrap,
                             ),
                           ),
-                        if (widget.showSelectAll &&
-                            widget.selectAllWidget != null)
+                        if (widget.showSelectAll)
                           Expanded(
                             child: Padding(
-                              padding: const EdgeInsets.only(left: 4),
-                              child: widget.selectAllWidget!,
-                            ),
+                                padding: const EdgeInsets.only(left: 4),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    if (widget.selectAllWidget != null)
+                                      widget.selectAllWidget!,
+                                    if (widget.selectAllTrailing != null)
+                                      Expanded(
+                                        child: Padding(
+                                            padding: const EdgeInsetsDirectional
+                                                .only(end: 12),
+                                            child: widget
+                                                .selectAllTrailing!(context)),
+                                      ),
+                                  ],
+                                )),
                           ),
                       ],
                     ),

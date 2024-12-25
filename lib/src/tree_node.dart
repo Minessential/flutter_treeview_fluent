@@ -9,8 +9,6 @@ part of 'treeview.dart';
 /// The type parameter [T] represents the type of the [value] associated
 /// with this node.
 class TreeNode<T> {
-  dynamic key;
-
   /// The label widget displayed for this node.
   final Widget label;
 
@@ -19,6 +17,12 @@ class TreeNode<T> {
 
   /// The icon to display next to this node.
   final Icon? icon;
+
+  /// The trailing widget displayed for this node.
+  final Widget Function(BuildContext context, TreeNode<T> node)? trailing;
+
+  /// Extra data associated with this node.
+  final dynamic data;
 
   /// The list of child nodes for this node.
   final List<TreeNode<T>> children;
@@ -31,10 +35,11 @@ class TreeNode<T> {
   bool _isPartiallySelected = false;
 
   TreeNode._internal({
-    required this.key,
     required this.label,
     this.value,
     this.icon,
+    this.trailing,
+    this.data,
     required this.children,
     TreeNode<T>? parent,
     bool hidden = false,
@@ -61,22 +66,28 @@ class TreeNode<T> {
   ///
   /// The [icon] parameter specifies the icon to display next to the node.
   ///
+  /// The [trailing] parameter specifies the widget to display after the node.
+  ///
+  /// The [data] parameter is an optional map of extra data associated with this node.
+  ///
   /// The [isSelected] parameter controls the initial selection state of the node.
   ///
   /// The [children] parameter is an optional list of child nodes.
   factory TreeNode({
-    dynamic key,
     required Widget label,
     T? value,
     Icon? icon,
+    Widget Function(BuildContext context, TreeNode<T> node)? trailing,
+    dynamic data,
     bool isSelected = false,
     List<TreeNode<T>>? children,
   }) {
     return TreeNode._internal(
-      key: key,
       label: label,
       value: value,
       icon: icon,
+      trailing: trailing,
+      data: data,
       children: children ?? [],
       isSelected: isSelected,
     );

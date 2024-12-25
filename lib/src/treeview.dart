@@ -58,6 +58,9 @@ class TreeView<T> extends StatefulWidget {
   /// Custom widget to replace the default "Select All" checkbox.
   final Widget? selectAllWidget;
 
+  /// The trailing widget displayed for select all node.
+  final Widget Function(BuildContext context)? selectAllTrailing;
+
   /// Whether to show the expand/collapse all button.
   final bool showExpandCollapseButton;
 
@@ -86,6 +89,7 @@ class TreeView<T> extends StatefulWidget {
     this.theme,
     this.showSelectAll = false,
     this.selectAllWidget,
+    this.selectAllTrailing,
     this.initialExpandedLevels,
     this.showExpandCollapseButton = false,
     this.customDrawNode,

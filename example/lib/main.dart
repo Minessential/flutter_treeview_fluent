@@ -45,6 +45,10 @@ class _MyHomePageState extends State<MyHomePage> {
       TreeNode(
         label: const Text('Project Folder'),
         value: 'project_folder',
+        trailing: (context, node) {
+          return Text(
+              '(${_treeViewKey.currentState?.getChildSelectedValues(node).length} selected)');
+        },
         children: [
           TreeNode(
             label: const Text('src'),
@@ -91,9 +95,14 @@ class _MyHomePageState extends State<MyHomePage> {
               value: 'package_json',
               icon: Icon(Icons.settings)),
           TreeNode(
-              label: const Text('.gitignore'),
-              value: 'gitignore',
-              icon: Icon(Icons.remove_red_eye)),
+            label: const Text('.gitignore'),
+            value: 'gitignore',
+            icon: Icon(Icons.remove_red_eye),
+            trailing: (context, node) {
+              return Text(node.data as String);
+            },
+            data: '1 KB',
+          ),
         ],
       ),
     ];
@@ -247,6 +256,10 @@ class _MyHomePageState extends State<MyHomePage> {
                 initialExpandedLevels: 1,
                 showSelectAll: true,
                 selectAllWidget: const Text('Select All'),
+                selectAllTrailing: (context) {
+                  return Text(
+                      '(${_treeViewKey.currentState?.getSelectedNodes().length} selected)');
+                },
                 showExpandCollapseButton: true,
               ),
             ),
