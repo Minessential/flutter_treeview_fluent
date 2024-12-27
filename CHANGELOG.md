@@ -13,3 +13,7 @@ Initial release.
 ## 1.3.0
 
 - Support trailing widget builder.
+
+## 1.3.1
+
+- Support horizontal scroll 

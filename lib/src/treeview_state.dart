@@ -91,7 +91,8 @@ class TreeViewState<T> extends State<TreeView<T>> {
     _notifySelectionChanged();
   }
 
-  void _setNodeAndDescendantsSelectionByValue(TreeNode<T> node, List<T> selectedValues) {
+  void _setNodeAndDescendantsSelectionByValue(
+      TreeNode<T> node, List<T> selectedValues) {
     if (node._hidden) return;
     node._isSelected = selectedValues.contains(node.value);
     node._isPartiallySelected = false;
@@ -286,8 +287,7 @@ class TreeViewState<T> extends State<TreeView<T>> {
                       node.label,
                       if (node.trailing != null)
                         Padding(
-                            padding:
-                                const EdgeInsetsDirectional.only(end: 12),
+                            padding: const EdgeInsetsDirectional.only(end: 12),
                             child: node.trailing!(context, node)),
                     ],
                   )),
@@ -429,84 +429,125 @@ class TreeViewState<T> extends State<TreeView<T>> {
 
   @override
   Widget build(BuildContext context) {
+    final verticalController = ScrollController();
+    final horizontalController = ScrollController();
+
     return Theme(
-      data: widget.theme ?? Theme.of(context),
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (widget.showSelectAll || widget.showExpandCollapseButton)
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0),
-                child: MouseRegion(
-                  cursor: SystemMouseCursors.click,
-                  child: InkWell(
-                    onTap: () {
-                      if (widget.showSelectAll) {
-                        setState(() {
-                          _isAllSelected = !_isAllSelected;
-                        });
-                        _handleSelectAll(_isAllSelected);
-                      }
-                    },
-                    child: Row(
-                      children: [
-                        SizedBox(
-                          width: 24,
-                          height: 24,
-                          child: widget.showExpandCollapseButton
-                              ? IconButton(
-                                  icon: Icon(_isAllExpanded
-                                      ? Icons.unfold_less
-                                      : Icons.unfold_more),
-                                  padding: EdgeInsets.zero,
-                                  constraints: const BoxConstraints(),
-                                  onPressed: _toggleExpandCollapseAll,
-                                )
-                              : const SizedBox(),
+        data: widget.theme ?? Theme.of(context),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return Scrollbar(
+              controller: horizontalController,
+              child: Scrollbar(
+                controller: verticalController,
+                notificationPredicate: (notification) => notification.depth >= 0,
+                child: SingleChildScrollView(
+                  controller: horizontalController,
+                  scrollDirection: Axis.horizontal,
+                  child: SingleChildScrollView(
+                    controller: verticalController,
+                    scrollDirection: Axis.vertical,
+                    child: IntrinsicWidth(
+                      child: Container(
+                        constraints: BoxConstraints(
+                          minWidth: constraints.maxWidth,
+                          minHeight: constraints.maxHeight,
                         ),
-                        if (widget.showSelectAll)
-                          SizedBox(
-                            width: 24,
-                            height: 24,
-                            child: Checkbox(
-                              value: _isAllSelected,
-                              onChanged: _handleSelectAll,
-                              materialTapTargetSize:
-                                  MaterialTapTargetSize.shrinkWrap,
-                            ),
-                          ),
-                        if (widget.showSelectAll)
-                          Expanded(
-                            child: Padding(
-                                padding: const EdgeInsets.only(left: 4),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    if (widget.selectAllWidget != null)
-                                      widget.selectAllWidget!,
-                                    if (widget.selectAllTrailing != null)
-                                      Expanded(
-                                        child: Padding(
-                                            padding: const EdgeInsetsDirectional
-                                                .only(end: 12),
-                                            child: widget
-                                                .selectAllTrailing!(context)),
-                                      ),
-                                  ],
-                                )),
-                          ),
-                      ],
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            if (widget.showSelectAll ||
+                                widget.showExpandCollapseButton)
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 8.0),
+                                child: MouseRegion(
+                                  cursor: SystemMouseCursors.click,
+                                  child: InkWell(
+                                    onTap: () {
+                                      if (widget.showSelectAll) {
+                                        setState(() {
+                                          _isAllSelected = !_isAllSelected;
+                                        });
+                                        _handleSelectAll(_isAllSelected);
+                                      }
+                                    },
+                                    child: Row(
+                                      children: [
+                                        SizedBox(
+                                          width: 24,
+                                          height: 24,
+                                          child: widget.showExpandCollapseButton
+                                              ? IconButton(
+                                                  icon: Icon(_isAllExpanded
+                                                      ? Icons.unfold_less
+                                                      : Icons.unfold_more),
+                                                  padding: EdgeInsets.zero,
+                                                  constraints:
+                                                      const BoxConstraints(),
+                                                  onPressed:
+                                                      _toggleExpandCollapseAll,
+                                                )
+                                              : const SizedBox(),
+                                        ),
+                                        if (widget.showSelectAll)
+                                          SizedBox(
+                                            width: 24,
+                                            height: 24,
+                                            child: Checkbox(
+                                              value: _isAllSelected,
+                                              onChanged: _handleSelectAll,
+                                              materialTapTargetSize:
+                                                  MaterialTapTargetSize
+                                                      .shrinkWrap,
+                                            ),
+                                          ),
+                                        if (widget.showSelectAll)
+                                          Expanded(
+                                            child: Padding(
+                                                padding: const EdgeInsets.only(
+                                                    left: 4),
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    if (widget
+                                                            .selectAllWidget !=
+                                                        null)
+                                                      widget.selectAllWidget!,
+                                                    if (widget
+                                                            .selectAllTrailing !=
+                                                        null)
+                                                      Expanded(
+                                                        child: Padding(
+                                                            padding:
+                                                                const EdgeInsetsDirectional
+                                                                    .only(
+                                                                    end: 12),
+                                                            child: widget
+                                                                    .selectAllTrailing!(
+                                                                context)),
+                                                      ),
+                                                  ],
+                                                )),
+                                          ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ..._roots.map((root) => _buildTreeNode(root)),
+                          ],
+                        ),
+                      ),
                     ),
                   ),
                 ),
               ),
-            ..._roots.map((root) => _buildTreeNode(root)),
-          ],
-        ),
-      ),
-    );
+            );
+          },
+        ));
   }
 
   List<TreeNode<T>> _getSelectedNodesRecursive(List<TreeNode<T>> nodes) {
