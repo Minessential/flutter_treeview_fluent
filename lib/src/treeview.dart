@@ -1,12 +1,13 @@
-import 'package:flutter/material.dart';
+
+import 'package:fluent_ui/fluent_ui.dart' hide FluentIcons;
+import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 
 part 'tree_node.dart';
-
 part 'treeview_state.dart';
 
 /// A customizable tree view widget for Flutter applications.
 ///
-/// [TreeView] displays hierarchical data in a tree structure, allowing for
+/// [FluentTreeView] displays hierarchical data in a tree structure, allowing for
 /// selection, expansion, and collapse of nodes. It supports various features
 /// such as multi-selection, filtering, sorting, and customization of appearance.
 ///
@@ -24,13 +25,13 @@ part 'treeview_state.dart';
 ///
 /// Example usage:
 /// ```dart
-/// TreeView<String>(
+/// FluentTreeView<String>(
 ///   nodes: [
-///     TreeNode(
+///     FluentTreeNode(
 ///       label: const Text('Root'),
 ///       children: [
-///         TreeNode(label: const Text('Child 1'), value: 'child1'),
-///         TreeNode(label: const Text('Child 2'), value: 'child2'),
+///         FluentTreeNode(label: const Text('Child 1'), value: 'child1'),
+///         FluentTreeNode(label: const Text('Child 2'), value: 'child2'),
 ///       ],
 ///     ),
 ///   ],
@@ -39,15 +40,15 @@ part 'treeview_state.dart';
 ///   },
 /// )
 /// ```
-class TreeView<T> extends StatefulWidget {
+class FluentTreeView<T> extends StatefulWidget {
   /// The root nodes of the tree.
-  final List<TreeNode<T>> nodes;
+  final List<FluentTreeNode<T>> nodes;
 
   /// Callback function called when the selection state changes.
   final Function(List<T?>)? onSelectionChanged;
 
   /// Optional theme data for the tree view.
-  final ThemeData? theme;
+  final FluentThemeData? theme;
 
   /// Whether to show a "Select All" checkbox.
   final bool showSelectAll;
@@ -65,9 +66,9 @@ class TreeView<T> extends StatefulWidget {
   final bool showExpandCollapseButton;
 
   /// Custom function to draw nodes
-  final Function(TreeNode<T> node, bool isSelected)? customDrawNode;
+  final Function(FluentTreeNode<T> node, bool isSelected)? customDrawNode;
 
-  /// Creates a [TreeView] widget.
+  /// Creates a [FluentTreeView] widget.
   ///
   /// The [nodes] and [onSelectionChanged] parameters are required.
   ///
@@ -82,7 +83,7 @@ class TreeView<T> extends StatefulWidget {
   /// If set to 1, only the root nodes are expanded, if set to 2, the root nodes and their direct children are expanded, and so on.
   ///
   /// Set [showExpandCollapseButton] to true to display a button that expands or collapses all nodes.
-  const TreeView({
+  const FluentTreeView({
     super.key,
     required this.nodes,
     this.onSelectionChanged,
@@ -96,5 +97,5 @@ class TreeView<T> extends StatefulWidget {
   });
 
   @override
-  TreeViewState<T> createState() => TreeViewState<T>();
+  FluentTreeViewState<T> createState() => FluentTreeViewState<T>();
 }

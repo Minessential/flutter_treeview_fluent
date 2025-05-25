@@ -1,33 +1,32 @@
+import 'package:checkable_treeview_fluent/checkable_treeview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:checkable_treeview/checkable_treeview.dart';
 
 void main() {
-  testWidgets('TreeView initializes with correct number of nodes',
-      (WidgetTester tester) async {
+  testWidgets('FluentTreeView initializes with correct number of nodes', (WidgetTester tester) async {
     // Create test node data
     final testNodes = [
-      TreeNode<String>(
+      FluentTreeNode<String>(
         label: const Text('Root 1'),
         children: [
-          TreeNode<String>(label: const Text('Child 1.1')),
-          TreeNode<String>(label: const Text('Child 1.2')),
+          FluentTreeNode<String>(label: const Text('Child 1.1')),
+          FluentTreeNode<String>(label: const Text('Child 1.2')),
         ],
       ),
-      TreeNode<String>(
+      FluentTreeNode<String>(
         label: const Text('Root 2'),
         children: [
-          TreeNode<String>(label: const Text('Child 2.1')),
-          TreeNode<String>(label: const Text('Child 2.2')),
+          FluentTreeNode<String>(label: const Text('Child 2.1')),
+          FluentTreeNode<String>(label: const Text('Child 2.2')),
         ],
       ),
     ];
 
-    // Build the TreeView widget
+    // Build the FluentTreeView widget
     await tester.pumpWidget(
       MaterialApp(
         home: Material(
-          child: TreeView<String>(
+          child: FluentTreeView<String>(
             nodes: testNodes,
             onSelectionChanged: (_) {},
             initialExpandedLevels: 0, // Expand all nodes
@@ -53,37 +52,36 @@ void main() {
     expect(find.byType(Text), findsNWidgets(6));
   });
 
-  testWidgets('TreeView getSelectedValues returns correct values',
-      (WidgetTester tester) async {
+  testWidgets('FluentTreeView getSelectedValues returns correct values', (WidgetTester tester) async {
     // Create test node data with values
     final testNodes = [
-      TreeNode<String>(
+      FluentTreeNode<String>(
         label: const Text('Root 1'),
         value: 'value1',
         children: [
-          TreeNode<String>(label: const Text('Child 1.1'), value: 'value1.1'),
-          TreeNode<String>(label: const Text('Child 1.2'), value: 'value1.2'),
+          FluentTreeNode<String>(label: const Text('Child 1.1'), value: 'value1.1'),
+          FluentTreeNode<String>(label: const Text('Child 1.2'), value: 'value1.2'),
         ],
       ),
-      TreeNode<String>(
+      FluentTreeNode<String>(
         label: const Text('Root 2'),
         value: 'value2',
         children: [
-          TreeNode<String>(label: const Text('Child 2.1'), value: 'value2.1'),
-          TreeNode<String>(label: const Text('Child 2.2'), value: 'value2.2'),
+          FluentTreeNode<String>(label: const Text('Child 2.1'), value: 'value2.1'),
+          FluentTreeNode<String>(label: const Text('Child 2.2'), value: 'value2.2'),
         ],
       ),
     ];
 
-    // Create a GlobalKey to access the TreeViewState
-    final GlobalKey<TreeViewState<String>> treeViewKey = GlobalKey();
+    // Create a GlobalKey to access the FluentTreeViewState
+    final GlobalKey<FluentTreeViewState<String>> FluenttreeViewKey = GlobalKey();
 
-    // Build the TreeView widget
+    // Build the FluentTreeView widget
     await tester.pumpWidget(
       MaterialApp(
         home: Material(
-          child: TreeView<String>(
-            key: treeViewKey,
+          child: FluentTreeView<String>(
+            key: FluenttreeViewKey,
             nodes: testNodes,
             onSelectionChanged: (_) {},
             initialExpandedLevels: 0, // Expand all nodes
@@ -101,11 +99,10 @@ void main() {
     await tester.pumpAndSettle();
 
     // Get selected values
-    final selectedValues = treeViewKey.currentState!.getSelectedValues();
+    final selectedValues = FluenttreeViewKey.currentState!.getSelectedValues();
 
     // Verify selected values
-    expect(selectedValues,
-        containsAll(['value1', 'value1.1', 'value1.2', 'value2.2']));
+    expect(selectedValues, containsAll(['value1', 'value1.1', 'value1.2', 'value2.2']));
     expect(selectedValues.length, 4);
   });
 }

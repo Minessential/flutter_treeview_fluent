@@ -1,10 +1,10 @@
-name: checkable_treeview
+name: checkable_treeview_fluent
 description: A checkable and customizable tree view widget for Flutter.
 version: 1.3.1
-homepage: https://github.com/monkeyWie/flutter_treeview
+
 screenshots:
   - description: "Example screenshot"
-    path: example/screenshots/example.gif
+    path: example/screenshots/example.png
 
 environment:
   sdk: ^3.2.0
@@ -13,6 +13,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  fluent_ui: ^4.11.5
+  fluentui_system_icons: ^1.1.273
 
 dev_dependencies:
   flutter_test:

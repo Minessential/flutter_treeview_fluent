@@ -2,13 +2,13 @@ part of 'treeview.dart';
 
 /// A node in a tree structure.
 ///
-/// Each [TreeNode] represents an item in a hierarchical data structure.
+/// Each [FluentTreeNode] represents an item in a hierarchical data structure.
 /// It contains information about its state (expanded, selected, etc.),
 /// its children, and its parent.
 ///
 /// The type parameter [T] represents the type of the [value] associated
 /// with this node.
-class TreeNode<T> {
+class FluentTreeNode<T> {
   /// The label widget displayed for this node.
   final Widget label;
 
@@ -19,29 +19,29 @@ class TreeNode<T> {
   final Icon? icon;
 
   /// The trailing widget displayed for this node.
-  final Widget Function(BuildContext context, TreeNode<T> node)? trailing;
+  final Widget Function(BuildContext context, FluentTreeNode<T> node)? trailing;
 
   /// Extra data associated with this node.
   final dynamic data;
 
   /// The list of child nodes for this node.
-  final List<TreeNode<T>> children;
+  final List<FluentTreeNode<T>> children;
 
-  TreeNode<T>? _parent;
+  FluentTreeNode<T>? _parent;
   bool _hidden = false;
   int _originalIndex = 0;
   bool _isExpanded = false;
   bool _isSelected = false;
   bool _isPartiallySelected = false;
 
-  TreeNode._internal({
+  FluentTreeNode._internal({
     required this.label,
     this.value,
     this.icon,
     this.trailing,
     this.data,
     required this.children,
-    TreeNode<T>? parent,
+    FluentTreeNode<T>? parent,
     bool hidden = false,
     int originalIndex = 0,
     bool isExpanded = false,
@@ -58,7 +58,7 @@ class TreeNode<T> {
     }
   }
 
-  /// Creates a [TreeNode].
+  /// Creates a [FluentTreeNode].
   ///
   /// The [label] parameter is required and specifies the widget to display for this node.
   ///
@@ -73,16 +73,16 @@ class TreeNode<T> {
   /// The [isSelected] parameter controls the initial selection state of the node.
   ///
   /// The [children] parameter is an optional list of child nodes.
-  factory TreeNode({
+  factory FluentTreeNode({
     required Widget label,
     T? value,
     Icon? icon,
-    Widget Function(BuildContext context, TreeNode<T> node)? trailing,
+    Widget Function(BuildContext context, FluentTreeNode<T> node)? trailing,
     dynamic data,
     bool isSelected = false,
-    List<TreeNode<T>>? children,
+    List<FluentTreeNode<T>>? children,
   }) {
-    return TreeNode._internal(
+    return FluentTreeNode._internal(
       label: label,
       value: value,
       icon: icon,

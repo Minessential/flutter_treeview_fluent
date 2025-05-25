@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
-import 'package:checkable_treeview/checkable_treeview.dart';
+import 'package:checkable_treeview_fluent/checkable_treeview.dart';
+import 'package:fluent_ui/fluent_ui.dart';
 
 void main() {
   runApp(const MyApp());
@@ -10,11 +10,9 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return FluentApp(
       title: 'TreeView Example',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+      theme: FluentThemeData(accentColor: Colors.blue),
       home: const MyHomePage(title: 'TreeView Example'),
     );
   }
@@ -32,72 +30,60 @@ class MyHomePage extends StatefulWidget {
 enum SortOrder { defaultOrder, ascending, descending }
 
 class _MyHomePageState extends State<MyHomePage> {
-  List<TreeNode<String>> _nodes = [];
+  List<FluentTreeNode<String>> _nodes = [];
   String _searchKeyword = '';
   final TextEditingController _searchController = TextEditingController();
-  final _treeViewKey = GlobalKey<TreeViewState<String>>();
+  final _treeViewKey = GlobalKey<FluentTreeViewState<String>>();
   SortOrder _currentSortOrder = SortOrder.defaultOrder;
 
   @override
   void initState() {
     super.initState();
     _nodes = [
-      TreeNode(
+      FluentTreeNode(
         label: const Text('Project Folder'),
         value: 'project_folder',
         trailing: (context, node) {
-          return Text(
-              '(${_treeViewKey.currentState?.getChildSelectedValues(node).length} selected)');
+          return Text('(${_treeViewKey.currentState?.getChildSelectedValues(node).length} selected)');
         },
         children: [
-          TreeNode(
+          FluentTreeNode(
             label: const Text('src'),
-            icon: Icon(Icons.folder_open),
+            icon: const Icon(FluentIcons.folder_open),
             children: [
-              TreeNode(
+              FluentTreeNode(
                   label: const Text('main.js'),
                   value: 'main_js',
-                  icon: Icon(Icons.javascript),
+                  icon: const Icon(FluentIcons.file_j_a_v_a),
                   isSelected: true),
-              TreeNode(
-                  label: const Text('app.js'),
-                  value: 'app_js',
-                  icon: Icon(Icons.javascript)),
-              TreeNode(
-                  label: const Text('styles.css'),
-                  value: 'styles_css',
-                  icon: Icon(Icons.css)),
+              FluentTreeNode(label: const Text('app.js'), value: 'app_js', icon: const Icon(FluentIcons.file_j_a_v_a)),
+              FluentTreeNode(
+                  label: const Text('styles.css'), value: 'styles_css', icon: const Icon(FluentIcons.file_c_s_s)),
             ],
           ),
-          TreeNode(
+          FluentTreeNode(
             label: const Text('public'),
             value: 'public_folder',
-            icon: Icon(Icons.folder_open),
+            icon: const Icon(FluentIcons.folder_open),
             children: [
-              TreeNode(
-                  label: const Text('index.html'),
-                  value: 'index_html',
-                  icon: Icon(Icons.html)),
-              TreeNode(
-                  label: const Text('favicon.ico'),
-                  value: 'favicon',
-                  icon: Icon(Icons.image)),
+              FluentTreeNode(
+                  label: const Text('index.html'), value: 'index_html', icon: const Icon(FluentIcons.file_h_t_m_l)),
+              FluentTreeNode(
+                  label: const Text('favicon.ico'), value: 'favicon', icon: const Icon(FluentIcons.file_image)),
             ],
           ),
         ],
       ),
-      TreeNode(
+      FluentTreeNode(
         label: const Text('Config Files'),
         value: 'config_folder',
         children: [
-          TreeNode(
-              label: const Text('package.json'),
-              value: 'package_json',
-              icon: Icon(Icons.settings)),
-          TreeNode(
+          FluentTreeNode(
+              label: const Text('package.json'), value: 'package_json', icon: const Icon(FluentIcons.settings)),
+          FluentTreeNode(
             label: const Text('.gitignore'),
             value: 'gitignore',
-            icon: Icon(Icons.remove_red_eye),
+            icon: const Icon(FluentIcons.red_eye),
             trailing: (context, node) {
               return Text(node.data as String);
             },
@@ -112,12 +98,11 @@ class _MyHomePageState extends State<MyHomePage> {
     print('Selected node values: $selectedValues');
   }
 
-  bool _filterNode(TreeNode<String> node) {
+  bool _filterNode(FluentTreeNode<String> node) {
     if (_searchKeyword.isEmpty) {
       return true;
     }
-    return node.value?.toLowerCase().contains(_searchKeyword.toLowerCase()) ??
-        false;
+    return node.value?.toLowerCase().contains(_searchKeyword.toLowerCase()) ?? false;
   }
 
   void _performSearch() {
@@ -137,12 +122,10 @@ class _MyHomePageState extends State<MyHomePage> {
           _treeViewKey.currentState?.sort(null);
           break;
         case SortOrder.ascending:
-          _treeViewKey.currentState
-              ?.sort((a, b) => (a.value ?? '').compareTo(b.value ?? ''));
+          _treeViewKey.currentState?.sort((a, b) => (a.value ?? '').compareTo(b.value ?? ''));
           break;
         case SortOrder.descending:
-          _treeViewKey.currentState
-              ?.sort((a, b) => (b.value ?? '').compareTo(a.value ?? ''));
+          _treeViewKey.currentState?.sort((a, b) => (b.value ?? '').compareTo(a.value ?? ''));
           break;
       }
     });
@@ -157,8 +140,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _printSelectedNodes() {
-    List<TreeNode<String>> selectedNodes =
-        _treeViewKey.currentState?.getSelectedNodes() ?? [];
+    List<FluentTreeNode<String>> selectedNodes = _treeViewKey.currentState?.getSelectedNodes() ?? [];
     print('Selected nodes:');
     for (var node in selectedNodes) {
       print('Value: ${node.value}, Label: ${node.label}');
@@ -167,101 +149,108 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
+    return NavigationView(
+      appBar: NavigationAppBar(
+        automaticallyImplyLeading: false,
         title: Text(widget.title),
       ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
+      pane: NavigationPane(
+        selected: 0,
+        displayMode: PaneDisplayMode.auto,
+        items: [
+          PaneItem(
+            icon: const Icon(FluentIcons.home),
+            title: const Text('Example'),
+            body: Column(
               children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: TextBox(
+                          controller: _searchController,
+                          placeholder: 'Enter search keyword',
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      FilledButton(
+                        onPressed: _performSearch,
+                        child: const Text('Search'),
+                      ),
+                      const SizedBox(width: 8),
+                      SizedBox(
+                        width: 150, // 设置固定宽度
+                        child: ComboBox<SortOrder>(
+                          isExpanded: true,
+                          value: _currentSortOrder,
+                          onChanged: (SortOrder? newValue) {
+                            if (newValue != null) {
+                              _sortNodes(newValue);
+                            }
+                          },
+                          items: SortOrder.values.map((SortOrder order) {
+                            return ComboBoxItem<SortOrder>(
+                              value: order,
+                              child: Text(_getSortOrderText(order)),
+                            );
+                          }).toList(),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: [
+                      FilledButton(
+                        onPressed: _expandAll,
+                        child: const Text('Expand All'),
+                      ),
+                      FilledButton(
+                        onPressed: _collapseAll,
+                        child: const Text('Collapse All'),
+                      ),
+                      FilledButton(
+                        onPressed: () {
+                          _treeViewKey.currentState?.setSelectAll(true);
+                        },
+                        child: const Text('Select All'),
+                      ),
+                      FilledButton(
+                        onPressed: () {
+                          _treeViewKey.currentState?.setSelectAll(false);
+                        },
+                        child: const Text('Deselect All'),
+                      ),
+                      FilledButton(
+                        onPressed: _printSelectedNodes,
+                        child: const Text('Print Selected Nodes'),
+                      ),
+                    ],
+                  ),
+                ),
                 Expanded(
-                  child: TextField(
-                    controller: _searchController,
-                    decoration: const InputDecoration(
-                      hintText: 'Enter search keyword',
-                      border: OutlineInputBorder(),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: FluentTreeView<String>(
+                      key: _treeViewKey,
+                      nodes: _nodes,
+                      onSelectionChanged: _onSelectionChanged,
+                      initialExpandedLevels: 1,
+                      showSelectAll: true,
+                      selectAllWidget: const Text('Select All'),
+                      selectAllTrailing: (context) {
+                        return Text('(${_treeViewKey.currentState?.getSelectedNodes().length} selected)');
+                      },
+                      showExpandCollapseButton: true,
                     ),
                   ),
                 ),
-                const SizedBox(width: 8),
-                ElevatedButton(
-                  onPressed: _performSearch,
-                  child: const Text('Search'),
-                ),
-                const SizedBox(width: 8),
-                SizedBox(
-                  width: 150, // 设置固定宽度
-                  child: DropdownButton<SortOrder>(
-                    isExpanded: true,
-                    value: _currentSortOrder,
-                    onChanged: (SortOrder? newValue) {
-                      if (newValue != null) {
-                        _sortNodes(newValue);
-                      }
-                    },
-                    items: SortOrder.values.map((SortOrder order) {
-                      return DropdownMenuItem<SortOrder>(
-                        value: order,
-                        child: Text(_getSortOrderText(order)),
-                      );
-                    }).toList(),
-                  ),
-                ),
               ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: [
-                ElevatedButton(
-                  onPressed: _expandAll,
-                  child: const Text('Expand All'),
-                ),
-                ElevatedButton(
-                  onPressed: _collapseAll,
-                  child: const Text('Collapse All'),
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    _treeViewKey.currentState?.setSelectAll(true);
-                  },
-                  child: const Text('全部选中'),
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    _treeViewKey.currentState?.setSelectAll(false);
-                  },
-                  child: const Text('Deselect All'),
-                ),
-                ElevatedButton(
-                  onPressed: _printSelectedNodes,
-                  child: const Text('Print Selected Nodes'),
-                ),
-              ],
-            ),
-          ),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: TreeView<String>(
-                key: _treeViewKey,
-                nodes: _nodes,
-                onSelectionChanged: _onSelectionChanged,
-                initialExpandedLevels: 1,
-                showSelectAll: true,
-                selectAllWidget: const Text('Select All'),
-                selectAllTrailing: (context) {
-                  return Text(
-                      '(${_treeViewKey.currentState?.getSelectedNodes().length} selected)');
-                },
-                showExpandCollapseButton: true,
-              ),
             ),
           ),
         ],

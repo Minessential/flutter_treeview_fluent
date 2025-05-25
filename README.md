@@ -1,14 +1,19 @@
-# Checkable TreeView
+# Checkable FluentTreeView
 
-[![Pub Version](https://img.shields.io/pub/v/checkable_treeview?color=blue&logo=dart)](https://pub.dev/packages/checkable_treeview)
-[![Pub Points](https://img.shields.io/pub/points/checkable_treeview?color=blue&logo=dart)](https://pub.dev/packages/checkable_treeview)
+fluent design for [Checkable TreeView](https://pub.dev/packages/checkable_treeview)
+
 [![License](https://img.shields.io/github/license/monkeyWie/flutter_treeview)](https://github.com/monkeyWie/flutter_treeview/blob/main/LICENSE)
+<a title="Made with Fluent Design" href="https://github.com/bdlukaa/fluent_ui">
+  <img
+    src="https://img.shields.io/badge/fluent-design-blue?style=flat-square&color=gray&labelColor=0078D7"
+  />
+</a>
 
 A checkable and customizable tree view widget for Flutter.
 
 ## Screenshot
 
-![](https://raw.githubusercontent.com/monkeyWie/flutter_treeview/main/example/screenshots/example.gif)
+![](./example/screenshots/example.png)
 
 ## Features
 
@@ -22,18 +27,22 @@ A checkable and customizable tree view widget for Flutter.
 
 ## Getting Started
 
-To use the TreeView widget in your Flutter project, follow these steps:
+To use the FluentTreeView widget in your Flutter project, follow these steps:
 
+Manually install the plug-in
 ```
-flutter pub add checkable_treeview
+dependencies:
+  checkable_treeview_fluent:
+    git:
+      url: https://github.com/Minessential/flutter_treeview_fluent.git
 ```
 
 ## Usage
 
-Here's a basic example of how to use the TreeView widget:
+Here's a basic example of how to use the FluentTreeView widget:
 
 ```dart
-import 'package:flutter/material.dart';
+import 'package:fluent_ui/fluent_ui.dart';
 import 'package:checkable_treeview/checkable_treeview.dart';
 
 void main() {
@@ -43,26 +52,37 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text('TreeView Example'),
+    return FluentApp(
+      home: NavigationView(
+        appBar: const NavigationAppBar(
+          automaticallyImplyLeading: false,
+          title: Text('FluentTreeView Example'),
         ),
-        body: TreeView<String>(
-          nodes: [
-            TreeNode(
-              label: const Text('Root'),
-              value: 'root',
-              icon: Icon(Icons.folder),
-              children: [
-                TreeNode(label: const Text('Child 1'), value: 'child1'),
-                TreeNode(label: const Text('Child 2'), value: 'child2'),
-              ],
+        pane: NavigationPane(
+          selected: 0,
+          displayMode: PaneDisplayMode.auto,
+          items: [
+            PaneItem(
+              icon: const Icon(FluentIcons.home),
+              title: const Text('Example'),
+              body: FluentTreeView<String>(
+                nodes: [
+                  FluentTreeNode(
+                    label: const Text('Root'),
+                    value: 'root',
+                    icon: const Icon(FluentIcons.folder),
+                    children: [
+                      FluentTreeNode(label: const Text('Child 1'), value: 'child1'),
+                      FluentTreeNode(label: const Text('Child 2'), value: 'child2'),
+                    ],
+                  ),
+                ],
+                onSelectionChanged: (selectedValues) {
+                  print('Selected values: $selectedValues');
+                },
+              ),
             ),
           ],
-          onSelectionChanged: (selectedValues) {
-            print('Selected values: $selectedValues');
-          },
         ),
       ),
     );
@@ -72,7 +92,7 @@ class MyApp extends StatelessWidget {
 
 ## Customization
 
-The TreeView widget offers various customization options:
+The FluentTreeView widget offers various customization options:
 
 - `showSelectAll`: Enable/disable the "Select All" checkbox
 - `selectAllWidget`: Custom widget for the "Select All" option
@@ -85,41 +105,41 @@ For more advanced customization, refer to the API documentation.
 
 ### Filtering
 
-To implement filtering, use the `filter` method of the `TreeViewState`:
+To implement filtering, use the `filter` method of the `FluentTreeViewState`:
 
 ```dart
 
-final treeViewKey = GlobalKey<TreeViewState<String>>();
+final treeViewKey = GlobalKey<FluentTreeViewState<String>>();
 
 treeViewKey.currentState?.filter('search keyword');
 ```
 
 ### Sorting
 
-To implement sorting, use the `sort` method of the `TreeViewState`:
+To implement sorting, use the `sort` method of the `FluentTreeViewState`:
 
 ```dart
-final treeViewKey = GlobalKey<TreeViewState<String>>();
+final treeViewKey = GlobalKey<FluentTreeViewState<String>>();
 
 treeViewKey.currentState?.sort((a, b) => a.label.compareTo(b.label));
 ```
 
 ### Set Select All
 
-To set the select all state, use the `setSelectAll` method of the `TreeViewState`:
+To set the select all state, use the `setSelectAll` method of the `FluentTreeViewState`:
 
 ```dart
-final treeViewKey = GlobalKey<TreeViewState<String>>();
+final treeViewKey = GlobalKey<FluentTreeViewState<String>>();
 
 treeViewKey.currentState?.setSelectAll(true);
 ```
 
 ### Expand/Collapse All
 
-To expand or collapse all nodes, use the `expandAll` and `collapseAll` methods of the `TreeViewState`:
+To expand or collapse all nodes, use the `expandAll` and `collapseAll` methods of the `FluentTreeViewState`:
 
 ```dart
-final treeViewKey = GlobalKey<TreeViewState<String>>();
+final treeViewKey = GlobalKey<FluentTreeViewState<String>>();
 
 treeViewKey.currentState?.expandAll();
 treeViewKey.currentState?.collapseAll();
@@ -127,20 +147,20 @@ treeViewKey.currentState?.collapseAll();
 
 ### Get Selected Nodes
 
-To get the selected nodes, use the `getSelectedNodes` method of the `TreeViewState`:
+To get the selected nodes, use the `getSelectedNodes` method of the `FluentTreeViewState`:
 
 ```dart
-final treeViewKey = GlobalKey<TreeViewState<String>>();
+final treeViewKey = GlobalKey<FluentTreeViewState<String>>();
 
 final selectedNodes = treeViewKey.currentState?.getSelectedNodes();
 ```
 
 ### Get Selected Values
 
-To get the selected values, use the `getSelectedValues` method of the `TreeViewState`:
+To get the selected values, use the `getSelectedValues` method of the `FluentTreeViewState`:
 
 ```dart
-final treeViewKey = GlobalKey<TreeViewState<String>>();
+final treeViewKey = GlobalKey<FluentTreeViewState<String>>();
 
 final selectedValues = treeViewKey.currentState?.getSelectedValues();
 ```

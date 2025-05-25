@@ -1,6 +1,6 @@
 part of 'treeview.dart';
 
-/// The state management class for the [TreeView] widget.
+/// The state management class for the [FluentTreeView] widget.
 ///
 /// This class handles the internal logic and state of the tree view, including:
 /// - Node selection and deselection
@@ -16,10 +16,10 @@ part of 'treeview.dart';
 /// - [expandAll] and [collapseAll] for expanding or collapsing all nodes
 /// - [getSelectedNodes] and [getSelectedValues] for retrieving selected items
 ///
-/// This class is not intended to be used directly by users of the [TreeView] widget,
+/// This class is not intended to be used directly by users of the [FluentTreeView] widget,
 /// but rather serves as the internal state management mechanism.
-class TreeViewState<T> extends State<TreeView<T>> {
-  late List<TreeNode<T>> _roots;
+class FluentTreeViewState<T> extends State<FluentTreeView<T>> {
+  late List<FluentTreeNode<T>> _roots;
   bool _isAllSelected = false;
   late bool _isAllExpanded;
 
@@ -37,7 +37,7 @@ class TreeViewState<T> extends State<TreeView<T>> {
   /// Filters the tree nodes based on the provided filter function.
   ///
   /// The [filterFunction] should return true for nodes that should be visible.
-  void filter(bool Function(TreeNode<T>) filterFunction) {
+  void filter(bool Function(FluentTreeNode<T>) filterFunction) {
     setState(() {
       _applyFilter(_roots, filterFunction);
       _updateAllNodesSelectionState();
@@ -48,11 +48,10 @@ class TreeViewState<T> extends State<TreeView<T>> {
   /// Sorts the tree nodes based on the provided compare function.
   ///
   /// If [compareFunction] is null, the original order is restored.
-  void sort(int Function(TreeNode<T>, TreeNode<T>)? compareFunction) {
+  void sort(int Function(FluentTreeNode<T>, FluentTreeNode<T>)? compareFunction) {
     setState(() {
       if (compareFunction == null) {
-        _applySort(
-            _roots, (a, b) => a._originalIndex.compareTo(b._originalIndex));
+        _applySort(_roots, (a, b) => a._originalIndex.compareTo(b._originalIndex));
       } else {
         _applySort(_roots, compareFunction);
       }
@@ -91,8 +90,7 @@ class TreeViewState<T> extends State<TreeView<T>> {
     _notifySelectionChanged();
   }
 
-  void _setNodeAndDescendantsSelectionByValue(
-      TreeNode<T> node, List<T> selectedValues) {
+  void _setNodeAndDescendantsSelectionByValue(FluentTreeNode<T> node, List<T> selectedValues) {
     if (node._hidden) return;
     node._isSelected = selectedValues.contains(node.value);
     node._isPartiallySelected = false;
@@ -102,12 +100,12 @@ class TreeViewState<T> extends State<TreeView<T>> {
   }
 
   /// Returns a list of all selected nodes in the tree.
-  List<TreeNode<T>> getSelectedNodes() {
+  List<FluentTreeNode<T>> getSelectedNodes() {
     return _getSelectedNodesRecursive(_roots);
   }
 
   /// Returns a list of all selected child nodes of the given node.
-  List<TreeNode<T>> getChildSelectedNodes(TreeNode<T> node) {
+  List<FluentTreeNode<T>> getChildSelectedNodes(FluentTreeNode<T> node) {
     return _getSelectedNodesRecursive(node.children);
   }
 
@@ -117,11 +115,11 @@ class TreeViewState<T> extends State<TreeView<T>> {
   }
 
   /// Returns a list of all selected child nodes values of the given node.
-  List<T?> getChildSelectedValues(TreeNode<T> node) {
+  List<T?> getChildSelectedValues(FluentTreeNode<T> node) {
     return _getSelectedValues(node.children);
   }
 
-  void _initializeNodes(List<TreeNode<T>> nodes, TreeNode<T>? parent) {
+  void _initializeNodes(List<FluentTreeNode<T>> nodes, FluentTreeNode<T>? parent) {
     for (int i = 0; i < nodes.length; i++) {
       nodes[i]._originalIndex = i;
       nodes[i]._parent = parent;
@@ -129,7 +127,7 @@ class TreeViewState<T> extends State<TreeView<T>> {
     }
   }
 
-  void _setInitialExpansion(List<TreeNode<T>> nodes, int currentLevel) {
+  void _setInitialExpansion(List<FluentTreeNode<T>> nodes, int currentLevel) {
     if (widget.initialExpandedLevels == null) {
       return;
     }
@@ -145,8 +143,7 @@ class TreeViewState<T> extends State<TreeView<T>> {
     }
   }
 
-  void _applySort(List<TreeNode<T>> nodes,
-      int Function(TreeNode<T>, TreeNode<T>) compareFunction) {
+  void _applySort(List<FluentTreeNode<T>> nodes, int Function(FluentTreeNode<T>, FluentTreeNode<T>) compareFunction) {
     nodes.sort(compareFunction);
     for (var node in nodes) {
       if (node.children.isNotEmpty) {
@@ -155,11 +152,9 @@ class TreeViewState<T> extends State<TreeView<T>> {
     }
   }
 
-  void _applyFilter(
-      List<TreeNode<T>> nodes, bool Function(TreeNode<T>) filterFunction) {
+  void _applyFilter(List<FluentTreeNode<T>> nodes, bool Function(FluentTreeNode<T>) filterFunction) {
     for (var node in nodes) {
-      bool shouldShow =
-          filterFunction(node) || _hasVisibleDescendant(node, filterFunction);
+      bool shouldShow = filterFunction(node) || _hasVisibleDescendant(node, filterFunction);
       node._hidden = !shouldShow;
       _applyFilter(node.children, filterFunction);
     }
@@ -171,14 +166,14 @@ class TreeViewState<T> extends State<TreeView<T>> {
     }
   }
 
-  void _updateNodeSelectionStateBottomUp(TreeNode<T> node) {
+  void _updateNodeSelectionStateBottomUp(FluentTreeNode<T> node) {
     for (var child in node.children) {
       _updateNodeSelectionStateBottomUp(child);
     }
     _updateSingleNodeSelectionState(node);
   }
 
-  void _updateNodeSelection(TreeNode<T> node, bool? isSelected) {
+  void _updateNodeSelection(FluentTreeNode<T> node, bool? isSelected) {
     setState(() {
       if (isSelected == null) {
         _handlePartialSelection(node);
@@ -191,7 +186,7 @@ class TreeViewState<T> extends State<TreeView<T>> {
     _notifySelectionChanged();
   }
 
-  void _handlePartialSelection(TreeNode<T> node) {
+  void _handlePartialSelection(FluentTreeNode<T> node) {
     if (node._isSelected || node._isPartiallySelected) {
       _updateNodeAndDescendants(node, false);
     } else {
@@ -199,7 +194,7 @@ class TreeViewState<T> extends State<TreeView<T>> {
     }
   }
 
-  void _updateNodeAndDescendants(TreeNode<T> node, bool isSelected) {
+  void _updateNodeAndDescendants(FluentTreeNode<T> node, bool isSelected) {
     if (!node._hidden) {
       node._isSelected = isSelected;
       node._isPartiallySelected = false;
@@ -209,8 +204,8 @@ class TreeViewState<T> extends State<TreeView<T>> {
     }
   }
 
-  void _updateAncestorsRecursively(TreeNode<T> node) {
-    TreeNode<T>? parent = node._parent;
+  void _updateAncestorsRecursively(FluentTreeNode<T> node) {
+    FluentTreeNode<T>? parent = node._parent;
     if (parent != null) {
       _updateSingleNodeSelectionState(parent);
       _updateAncestorsRecursively(parent);
@@ -222,7 +217,7 @@ class TreeViewState<T> extends State<TreeView<T>> {
     widget.onSelectionChanged?.call(selectedValues);
   }
 
-  List<T?> _getSelectedValues(List<TreeNode<T>> nodes) {
+  List<T?> _getSelectedValues(List<FluentTreeNode<T>> nodes) {
     List<T?> selectedValues = [];
     for (var node in nodes) {
       if (node._isSelected && !node._hidden) {
@@ -233,7 +228,7 @@ class TreeViewState<T> extends State<TreeView<T>> {
     return selectedValues;
   }
 
-  Widget _buildTreeNode(TreeNode<T> node, {double leftPadding = 0}) {
+  Widget _buildFluentTreeNode(FluentTreeNode<T> node, {double leftPadding = 0}) {
     if (node._hidden) {
       return const SizedBox.shrink();
     }
@@ -245,41 +240,40 @@ class TreeViewState<T> extends State<TreeView<T>> {
           const SizedBox(height: 2),
           MouseRegion(
             cursor: SystemMouseCursors.click,
-            child: InkWell(
-              onTap: () => _updateNodeSelection(node, !node._isSelected),
-              child: Row(
+            child: IconButton(
+              onPressed: () => _updateNodeSelection(node, !node._isSelected),
+              icon: Row(
                 children: [
                   SizedBox(
-                    width: 24,
+                    width: 28,
+                    height: 28,
                     child: node.children.isNotEmpty
                         ? IconButton(
                             icon: Icon(
                               node._isExpanded
-                                  ? Icons.expand_more
-                                  : Icons.chevron_right,
+                                  ? FluentIcons.chevron_down_16_regular
+                                  : FluentIcons.chevron_right_16_regular,
+                              size: 16,
                             ),
                             onPressed: () => _toggleNodeExpansion(node),
-                            padding: EdgeInsets.zero,
-                            constraints: const BoxConstraints(),
+                            // padding: EdgeInsets.zero,
+                            // constraints: const BoxConstraints(),
                           )
                         : null,
                   ),
-                  SizedBox(
-                    width: 24,
-                    height: 24,
+                  Container(
+                    width: 28,
+                    height: 28,
+                    alignment: Alignment.center,
                     child: Checkbox(
-                      value: node._isSelected
-                          ? true
-                          : (node._isPartiallySelected ? null : false),
-                      tristate: true,
-                      onChanged: (bool? value) =>
-                          _updateNodeSelection(node, value ?? false),
-                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      checked: node._isSelected ? true : (node._isPartiallySelected ? null : false),
+                      // tristate: true,
+                      onChanged: (bool? value) => _updateNodeSelection(node, value ?? false),
+                      // materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     ),
                   ),
-                  const SizedBox(width: 4),
-                  if (node.icon != null) node.icon!,
-                  const SizedBox(width: 4),
+                  const SizedBox(width: 8),
+                  if (node.icon != null) ...[node.icon!, const SizedBox(width: 8)],
                   Expanded(
                       child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -287,8 +281,7 @@ class TreeViewState<T> extends State<TreeView<T>> {
                       node.label,
                       if (node.trailing != null)
                         Padding(
-                            padding: const EdgeInsetsDirectional.only(end: 12),
-                            child: node.trailing!(context, node)),
+                            padding: const EdgeInsetsDirectional.only(end: 12), child: node.trailing!(context, node)),
                     ],
                   )),
                 ],
@@ -315,9 +308,7 @@ class TreeViewState<T> extends State<TreeView<T>> {
                     padding: const EdgeInsets.only(left: 24),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: node.children
-                          .map((child) => _buildTreeNode(child))
-                          .toList(),
+                      children: node.children.map((child) => _buildFluentTreeNode(child)).toList(),
                     ),
                   )
                 : null,
@@ -327,7 +318,7 @@ class TreeViewState<T> extends State<TreeView<T>> {
     );
   }
 
-  void _toggleNodeExpansion(TreeNode<T> node) {
+  void _toggleNodeExpansion(FluentTreeNode<T> node) {
     setState(() {
       node._isExpanded = !node._isExpanded;
     });
@@ -338,28 +329,23 @@ class TreeViewState<T> extends State<TreeView<T>> {
     super.dispose();
   }
 
-  bool _hasVisibleDescendant(
-      TreeNode<T> node, bool Function(TreeNode<T>) filterFunction) {
+  bool _hasVisibleDescendant(FluentTreeNode<T> node, bool Function(FluentTreeNode<T>) filterFunction) {
     for (var child in node.children) {
-      if (filterFunction(child) ||
-          _hasVisibleDescendant(child, filterFunction)) {
+      if (filterFunction(child) || _hasVisibleDescendant(child, filterFunction)) {
         return true;
       }
     }
     return false;
   }
 
-  void _updateSingleNodeSelectionState(TreeNode<T> node) {
-    if (node.children.isEmpty ||
-        node.children.every((child) => child._hidden)) {
+  void _updateSingleNodeSelectionState(FluentTreeNode<T> node) {
+    if (node.children.isEmpty || node.children.every((child) => child._hidden)) {
       return;
     }
 
-    List<TreeNode<T>> visibleChildren =
-        node.children.where((child) => !child._hidden).toList();
+    List<FluentTreeNode<T>> visibleChildren = node.children.where((child) => !child._hidden).toList();
     bool allSelected = visibleChildren.every((child) => child._isSelected);
-    bool anySelected = visibleChildren
-        .any((child) => child._isSelected || child._isPartiallySelected);
+    bool anySelected = visibleChildren.any((child) => child._isSelected || child._isPartiallySelected);
 
     if (allSelected) {
       node._isSelected = true;
@@ -373,7 +359,7 @@ class TreeViewState<T> extends State<TreeView<T>> {
     }
   }
 
-  void _setExpansionState(List<TreeNode<T>> nodes, bool isExpanded) {
+  void _setExpansionState(List<FluentTreeNode<T>> nodes, bool isExpanded) {
     for (var node in nodes) {
       node._isExpanded = isExpanded;
       _setExpansionState(node.children, isExpanded);
@@ -382,20 +368,16 @@ class TreeViewState<T> extends State<TreeView<T>> {
 
   void _updateSelectAllState() {
     if (!widget.showSelectAll) return;
-    bool allSelected = _roots
-        .where((node) => !node._hidden)
-        .every((node) => _isNodeFullySelected(node));
+    bool allSelected = _roots.where((node) => !node._hidden).every((node) => _isNodeFullySelected(node));
     setState(() {
       _isAllSelected = allSelected;
     });
   }
 
-  bool _isNodeFullySelected(TreeNode<T> node) {
+  bool _isNodeFullySelected(FluentTreeNode<T> node) {
     if (node._hidden) return true;
     if (!node._isSelected) return false;
-    return node.children
-        .where((child) => !child._hidden)
-        .every(_isNodeFullySelected);
+    return node.children.where((child) => !child._hidden).every(_isNodeFullySelected);
   }
 
   void _handleSelectAll(bool? value) {
@@ -411,7 +393,7 @@ class TreeViewState<T> extends State<TreeView<T>> {
     }
   }
 
-  void _setNodeAndDescendantsSelection(TreeNode<T> node, bool isSelected) {
+  void _setNodeAndDescendantsSelection(FluentTreeNode<T> node, bool isSelected) {
     if (node._hidden) return;
     node._isSelected = isSelected;
     node._isPartiallySelected = false;
@@ -432,8 +414,8 @@ class TreeViewState<T> extends State<TreeView<T>> {
     final verticalController = ScrollController();
     final horizontalController = ScrollController();
 
-    return Theme(
-        data: widget.theme ?? Theme.of(context),
+    return FluentTheme(
+        data: widget.theme ?? FluentTheme.of(context),
         child: LayoutBuilder(
           builder: (context, constraints) {
             return Scrollbar(
@@ -456,15 +438,13 @@ class TreeViewState<T> extends State<TreeView<T>> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            if (widget.showSelectAll ||
-                                widget.showExpandCollapseButton)
+                            if (widget.showSelectAll || widget.showExpandCollapseButton)
                               Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 8.0),
+                                padding: const EdgeInsets.symmetric(vertical: 8.0),
                                 child: MouseRegion(
                                   cursor: SystemMouseCursors.click,
-                                  child: InkWell(
-                                    onTap: () {
+                                  child: IconButton(
+                                    onPressed: () {
                                       if (widget.showSelectAll) {
                                         setState(() {
                                           _isAllSelected = !_isAllSelected;
@@ -472,62 +452,46 @@ class TreeViewState<T> extends State<TreeView<T>> {
                                         _handleSelectAll(_isAllSelected);
                                       }
                                     },
-                                    child: Row(
+                                    icon: Row(
                                       children: [
                                         SizedBox(
-                                          width: 24,
-                                          height: 24,
+                                          height: 28,
+                                          width: 28,
                                           child: widget.showExpandCollapseButton
                                               ? IconButton(
-                                                  icon: Icon(_isAllExpanded
-                                                      ? Icons.unfold_less
-                                                      : Icons.unfold_more),
-                                                  padding: EdgeInsets.zero,
-                                                  constraints:
-                                                      const BoxConstraints(),
-                                                  onPressed:
-                                                      _toggleExpandCollapseAll,
+                                                  icon: Icon(
+                                                    _isAllExpanded
+                                                        ? FluentIcons.chevron_down_up_16_regular
+                                                        : FluentIcons.chevron_up_down_16_regular,
+                                                    size: 16,
+                                                  ),
+                                                  onPressed: _toggleExpandCollapseAll,
                                                 )
-                                              : const SizedBox(),
+                                              : null,
                                         ),
                                         if (widget.showSelectAll)
-                                          SizedBox(
-                                            width: 24,
-                                            height: 24,
+                                          Container(
+                                            width: 28,
+                                            height: 28,
+                                            alignment: Alignment.center,
                                             child: Checkbox(
-                                              value: _isAllSelected,
+                                              checked: _isAllSelected,
                                               onChanged: _handleSelectAll,
-                                              materialTapTargetSize:
-                                                  MaterialTapTargetSize
-                                                      .shrinkWrap,
                                             ),
                                           ),
                                         if (widget.showSelectAll)
                                           Expanded(
                                             child: Padding(
-                                                padding: const EdgeInsets.only(
-                                                    left: 4),
+                                                padding: const EdgeInsets.only(left: 8),
                                                 child: Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
+                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                   children: [
-                                                    if (widget
-                                                            .selectAllWidget !=
-                                                        null)
-                                                      widget.selectAllWidget!,
-                                                    if (widget
-                                                            .selectAllTrailing !=
-                                                        null)
+                                                    if (widget.selectAllWidget != null) widget.selectAllWidget!,
+                                                    if (widget.selectAllTrailing != null)
                                                       Expanded(
                                                         child: Padding(
-                                                            padding:
-                                                                const EdgeInsetsDirectional
-                                                                    .only(
-                                                                    end: 12),
-                                                            child: widget
-                                                                    .selectAllTrailing!(
-                                                                context)),
+                                                            padding: const EdgeInsetsDirectional.only(end: 12),
+                                                            child: widget.selectAllTrailing!(context)),
                                                       ),
                                                   ],
                                                 )),
@@ -537,7 +501,7 @@ class TreeViewState<T> extends State<TreeView<T>> {
                                   ),
                                 ),
                               ),
-                            ..._roots.map((root) => _buildTreeNode(root)),
+                            ..._roots.map((root) => _buildFluentTreeNode(root)),
                           ],
                         ),
                       ),
@@ -550,8 +514,8 @@ class TreeViewState<T> extends State<TreeView<T>> {
         ));
   }
 
-  List<TreeNode<T>> _getSelectedNodesRecursive(List<TreeNode<T>> nodes) {
-    List<TreeNode<T>> selectedNodes = [];
+  List<FluentTreeNode<T>> _getSelectedNodesRecursive(List<FluentTreeNode<T>> nodes) {
+    List<FluentTreeNode<T>> selectedNodes = [];
     for (var node in nodes) {
       if (node._isSelected && !node._hidden) {
         selectedNodes.add(node);
