@@ -461,8 +461,8 @@ class FluentTreeViewState<T> extends State<FluentTreeView<T>> {
                                               ? IconButton(
                                                   icon: Icon(
                                                     _isAllExpanded
-                                                        ? FluentIcons.chevron_down_up_16_regular
-                                                        : FluentIcons.chevron_up_down_16_regular,
+                                                        ? FluentIcons.chevron_down_up_16_filled
+                                                        : FluentIcons.chevron_up_down_16_filled,
                                                     size: 16,
                                                   ),
                                                   onPressed: _toggleExpandCollapseAll,
